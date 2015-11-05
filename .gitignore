@@ -17,5 +17,6 @@ lib/
 *.o
 *.d
 build/
-.depend
-.list
+*.depend
+*.list
+*.map
