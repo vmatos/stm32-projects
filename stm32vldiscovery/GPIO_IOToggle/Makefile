@@ -50,9 +50,8 @@ OBJS = $(sort \
  $(patsubst %.c,%.o,$(wildcard $(LIBSRC)/*.c)) \
  $(STARTUP_OBJ) \
  $(SYSTEM_OBJ))
-
-flash: main.bin
-  @sudo st-flash write v1 main.bin 0x8000000
+ 
+DEPS = $(OBJS:.o=.d)
 
 
 all: main.bin
@@ -70,8 +69,8 @@ main.elf: $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
 clean:
-	-rm -f $(OBJS)
-	-rm -f main.list main.elf main.hex main.map main.bin .depend
+	-rm -f $(OBJS) $(DEPS)
+	-rm -f main.list main.elf main.hex main.map main.bin .depend main.d
 
 depend dep: .depend
 
@@ -87,3 +86,6 @@ include .depend
 .s.o:
 	@echo as $<
 	@$(AS) $(ASFLAGS) -c -o $@ $<
+  
+flash: main.bin
+	@sudo st-flash write v1 main.bin 0x8000000
