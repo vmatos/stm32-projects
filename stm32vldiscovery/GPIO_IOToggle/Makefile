@@ -69,7 +69,7 @@ main.elf: $(OBJS)
 	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LIBS)
 
 clean:
-	-rm -f $(OBJS) $(DEPS)
+	-rm -f $(OBJS) $(DEPS) stm32f1xx_it.d system_stm32f1xx.d
 	-rm -f main.list main.elf main.hex main.map main.bin .depend main.d
 
 depend dep: .depend
