@@ -8,9 +8,9 @@ LDSCRIPT = STM32F303XE_FLASH.ld
 
 CMSIS = $(STM32CUBE)/Drivers/CMSIS
 CMSIS_DEVSUP = $(CMSIS)/Device/ST/$(DEVICE_FAMILY)
-CMSIS_OPT = -D$(DEVICE_TYPE) -DUSE_HAL_DRIVER
+CMSIS_OPT = -D$(DEVICE_TYPE) -DUSE_HAL_DRIVER -DNUCLEO_F303RE -DSTM32F303RETx
 OTHER_OPT = "-D__weak=__attribute__((weak))" "-D__packed=__attribute__((__packed__))" 
-CPU = -mthumb -mcpu=cortex-m4 -mfloat-abi=softfp -mfpu=fpv4-sp-d16
+CPU = -mthumb -mcpu=cortex-m4 -mfloat-abi=softfp -mfpu=fpv4-sp-d16 -mlittle-endian -march=armv7e-m
 PREFIX = arm-none-eabi
 
 SRCDIR = Src
@@ -22,8 +22,8 @@ LIBINC += -I$(CMSIS_DEVSUP)/Include
 LIBINC += -I$(STM32CUBE)/Drivers/$(DEVICE_FAMILY)_HAL_Driver/Inc
 LIBINC += -I$(STM32CUBE)/Drivers/BSP/STM32F3xx-Nucleo
 
-LIBS = $(CMSIS)/Lib/GCC/libarm_cortexM4lf_math.a
-LIBS += -lm
+#LIBS = $(CMSIS)/Lib/GCC/libarm_cortexM4lf_math.a
+LIBS = -lc -lm -lnosys
 
 CC      = $(PREFIX)-gcc
 CCDEP   = $(PREFIX)-gcc
@@ -36,8 +36,9 @@ GDB			= $(PREFIX)-gdb
 SIZE		= $(PREFIX)-size
 
 INCLUDES = -I$(INCDIR) $(LIBINC)
-CFLAGS  = $(CPU) $(CMSIS_OPT) $(OTHER_OPT) -Wall -fno-common -MD -fno-strict-aliasing -Os $(INCLUDES) -g -Wfatal-errors -g 
-ASFLAGS = $(CFLAGS) -x assembler-with-cpp
+CFLAGS  = $(CPU) $(CMSIS_OPT) $(OTHER_OPT) -Wall -fno-common -ffunction-sections -fdata-sections -MD -fno-strict-aliasing -O2 $(INCLUDES) -g -Wfatal-errors -g 
+# ASFLAGS = $(CFLAGS) -x assembler-with-cpp
+ASFLAGS = $(CFLAGS) 
 LDFLAGS = -Wl,--gc-sections,-Map=$*.map,-cref -T $(LDSCRIPT) $(CPU)
 ARFLAGS = cr
 OBJCOPYFLAGS = -Obinary
